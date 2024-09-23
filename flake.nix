@@ -19,7 +19,11 @@
         cargo = pkgs.rust-bin.stable.latest.default;
         rustc = pkgs.rust-bin.stable.latest.default;
       };
-      libs = [ ];
+      libs = [
+        pkgs.alsa-lib.dev
+        pkgs.wayland
+        pkgs.libxkbcommon
+      ];
     in
     {
       devShells.default = pkgs.mkShell {
@@ -39,8 +43,13 @@
         nativeBuildInputs = with pkgs; [ pkg-config ];
         buildInputs = libs;
 
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath libs;
+
         cargoLock = {
           lockFile = ./Cargo.lock;
+          outputHashes = {
+            "iced_aw-0.8.0" = "sha256-g/FaegXy3wFzW1kbSt/pOxP9TIzqHG1WKaAWjkBViIQ=";
+          };
         };
       };
     }
